@@ -58,36 +58,6 @@ ServerEvents.recipes(allthemods => {
                 results.push({ id: 'productivebees:wax', count: 1 })
             }
 
-            if (generatedCount === 0) {
-                if (recipe.has('outputs')) {
-                    let outArr = recipe.getAsJsonArray('outputs')
-                    console.log(`[ATM] Create Mixer first recipe bee=${beeType} outputCount=${outArr.size()}`)
-                    for (let oi = 0; oi < outArr.size() && oi < 3; oi++) {
-                        let elem = outArr.get(oi)
-                        console.log(`[ATM]   output[${oi}] isObject=${elem.isJsonObject()}`)
-                        if (elem.isJsonObject()) {
-                            let outp = elem.getAsJsonObject()
-                            console.log(`[ATM]   output[${oi}] hasItem=${outp.has('item')} hasChance=${outp.has('chance')}`)
-                    if (outp.has('chance')) console.log(`[ATM]   output[${oi}] chance=${outp.get('chance').getAsInt()}`)
-                            if (outp.has('item')) {
-                                let it = outp.get('item')
-                                console.log(`[ATM]   output[${oi}] item.isObj=${it.isJsonObject()}`)
-                                if (it.isJsonObject()) {
-                                    let ito = it.getAsJsonObject()
-                                    console.log(`[ATM]   output[${oi}] item.hasItem=${ito.has('item')} item.hasId=${ito.has('id')}`)
-                                    if (ito.has('item')) console.log(`[ATM]   output[${oi}] item.item=${ito.get('item').getAsString()}`)
-                                    if (ito.has('id')) console.log(`[ATM]   output[${oi}] item.id=${ito.get('id').getAsString()}`)
-                                    console.log(`[ATM]   output[${oi}] item.hasCount=${ito.has('count')}`)
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    console.log(`[ATM] Create Mixer first recipe bee=${beeType} has NO outputs`)
-                }
-                console.log(`[ATM] Create Mixer first recipe results=${JSON.stringify(results)}`)
-            }
-
             let beeName = beeType.split(':')[1]
             let suffix = isCombBlock ? '_comb_block' : '_honeycomb'
 
