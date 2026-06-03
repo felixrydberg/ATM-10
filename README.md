@@ -4,6 +4,22 @@ This is the official repository and issue-tracker for All The Mods 10 1.21.1
 
 Does "All The Mods" *really* contain ALL THE MODS? No, of course not.
 
+#### Sync This Repo Into A Local CurseForge Install
+
+Install the official ATM10 profile in CurseForge first, then run:
+
+```sh
+./scripts/sync-curseforge-instance.sh
+```
+
+If the script cannot auto-detect your profile folder, point it at the instance directly:
+
+```sh
+./scripts/sync-curseforge-instance.sh --instance-path '/c/Users/<you>/curseforge/minecraft/Instances/All The Mods 10 - ATM10'
+```
+
+Use `--list-candidates` to print any auto-detected ATM10 instance folders. The script only syncs repo override content such as `config`, `defaultconfigs`, `kubejs`, `datapacks`, and `local`; it does not touch `mods` or CurseForge metadata.
+
 Need Help?
 ======
 When reporting an issue, please follow the templates!

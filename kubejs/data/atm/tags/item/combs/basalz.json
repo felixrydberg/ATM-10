@@ -1,0 +1,10 @@
+{
+    "values":  [
+                   {
+                       "id":  "productivebees:configurable_honeycomb",
+                       "components":  {
+                                          "productivebees:bee_type":  "productivebees:basalz"
+                                      }
+                   }
+               ]
+}

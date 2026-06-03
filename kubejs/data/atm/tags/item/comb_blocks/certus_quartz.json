@@ -1,0 +1,10 @@
+{
+    "values":  [
+                   {
+                       "id":  "productivebees:configurable_comb",
+                       "components":  {
+                                          "productivebees:bee_type":  "productivebees:certus_quartz"
+                                      }
+                   }
+               ]
+}
