@@ -2,6 +2,24 @@ ServerEvents.recipes(allthemods => {
     let centrifugeCount = 0
     let generatedCount = 0
 
+    // Heat requirement lookup: bee name -> 'heated' or 'superheated'
+    let heat = {}
+
+    // === Superheated (Blaze Cake burner) - Endgame materials ===
+    let superheatedBees = [
+        'allthemodium', 'vibranium', 'unobtainium',
+        'draconic', 'draconium', 'awakened_draconium',
+        'netherite',
+        'supremium', 'insanium',
+        'infinity', 'chaos', 'starry',
+        'crystal_matrix', 'neutronium',
+        'insanite',
+    ]
+    superheatedBees.forEach(b => { heat[b] = 'superheated' })
+
+    // === Heated (Blaze Burner) - Everything else ===
+    // All other bees default to 'heated' via the fallback below
+
     allthemods.forEachRecipe({ type: 'productivebees:centrifuge' }, rawRecipe => {
         centrifugeCount++
         try {
@@ -22,8 +40,10 @@ ServerEvents.recipes(allthemods => {
             let components = ingredient.getAsJsonObject('components')
             if (!components.has('productivebees:bee_type')) return
             let beeType = components.get('productivebees:bee_type').getAsString()
+            let beeName = beeType.includes(':') ? beeType.split(':')[1] : beeType
 
             let isCombBlock = combItem === 'productivebees:configurable_comb'
+            let suffix = isCombBlock ? '_comb_block' : '_honeycomb'
 
             let results = []
             if (recipe.has('outputs')) {
@@ -58,9 +78,6 @@ ServerEvents.recipes(allthemods => {
                 results.push({ id: 'productivebees:wax', count: 1 })
             }
 
-            let beeName = beeType.split(':')[1]
-            let suffix = isCombBlock ? '_comb_block' : '_honeycomb'
-
             allthemods.custom({
                 type: 'create:mixing',
                 ingredients: [
@@ -73,8 +90,8 @@ ServerEvents.recipes(allthemods => {
                     }
                 ],
                 results: results,
-                heatRequirement: 'heated'
-            }).id(`atm:create/mixing/${beeName}${suffix}`)
+                heat_requirement: heat[beeName] || 'heated'
+            }).id(`felixrydberg:create/mixing/${beeName}${suffix}`)
 
             generatedCount++
         } catch (e) {
