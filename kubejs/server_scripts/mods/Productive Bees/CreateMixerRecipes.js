@@ -51,23 +51,30 @@ ServerEvents.recipes(allthemods => {
                 for (let i = 0; i < outputs.size(); i++) {
                     try {
                         let output = outputs.get(i).getAsJsonObject()
-                        if (!output.has('item')) continue
-                        let itemObj = output.get('item')
-                        if (!itemObj.isJsonObject()) continue
-                        let item = itemObj.getAsJsonObject()
-                        let idElem = item.has('item') ? item.get('item') : item.get('id')
-                        if (!idElem) continue
-                        let itemId = idElem.getAsString()
-                        let count = item.has('count') ? item.get('count').getAsInt() : 1
-                        if (output.has('chance')) {
-                            let chance = output.get('chance').getAsInt()
-                            if (chance > 0 && chance < 100) {
-                                results.push({ id: itemId, count: count, chance: chance / 100 })
+
+                        if (output.has('item')) {
+                            let itemObj = output.get('item')
+                            if (!itemObj.isJsonObject()) continue
+                            let item = itemObj.getAsJsonObject()
+                            let idElem = item.has('item') ? item.get('item') : item.get('id')
+                            if (!idElem) continue
+                            let itemId = idElem.getAsString()
+                            let count = item.has('count') ? item.get('count').getAsInt() : 1
+                            if (output.has('chance')) {
+                                let chance = output.get('chance').getAsInt()
+                                if (chance > 0 && chance < 100) {
+                                    results.push({ id: itemId, count: count, chance: chance / 100 })
+                                } else {
+                                    results.push({ id: itemId, count: count })
+                                }
                             } else {
                                 results.push({ id: itemId, count: count })
                             }
-                        } else {
-                            results.push({ id: itemId, count: count })
+                        } else if (output.has('fluid')) {
+                            let fluidObj = output.getAsJsonObject('fluid')
+                            if (fluidObj.has('fluid')) {
+                                results.push({ id: fluidObj.get('fluid').getAsString(), amount: output.get('amount').getAsInt() })
+                            }
                         }
                     } catch (e) {
                     }
@@ -75,7 +82,20 @@ ServerEvents.recipes(allthemods => {
             }
 
             if (results.length === 0) {
-                results.push({ id: 'productivebees:wax', count: 1 })
+                results.push({ id: 'productivebees:honey', amount: isCombBlock ? 400 : 100 })
+            }
+
+            // Replace wax item with honey fluid — mixer produces honey, centrifuge keeps wax
+            let hasWax = false
+            for (let j = 0; j < results.length; j++) {
+                if (results[j].id === 'productivebees:wax') {
+                    results[j] = { id: 'productivebees:honey', amount: isCombBlock ? 400 : 100 }
+                    hasWax = true
+                    break
+                }
+            }
+            if (!hasWax) {
+                results.push({ id: 'productivebees:honey', amount: isCombBlock ? 400 : 100 })
             }
 
             allthemods.custom({
